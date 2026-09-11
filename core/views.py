@@ -1,13 +1,13 @@
-from django.shortcuts import render
+from django.shortcuts import render 
 
+def home(request): 
+    return render(request, "core/home.html") 
 
-def home(request):
-    return render(request, "core/home.html")
+def portal(request): 
+    return render(request, "core/placeholder.html", {"role": "Portal"}) 
 
+def listings(request): 
+    return render(request, "core/placeholder.html", {"role": "Listings"}) 
 
-def patient_placeholder(request):
-    return render(request, "core/placeholder.html", {"role": "Patient"})
-
-
-def provider_placeholder(request):
-    return render(request, "core/placeholder.html", {"role": "Provider"})
+def appointments(request): 
+    return render(request, "core/placeholder.html", {"role": "Appointments"})
