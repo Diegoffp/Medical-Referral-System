@@ -52,4 +52,5 @@ migrate: Applies migrations to the database.
 
 ## Next steps (future tickets)
 - Add Availability, Provider, and Location Models
-- Replace placeholder pages with real search/compare/referral functionality
+- Replace placeholder pages with real search/compare/referral functionality. 
+- Django's built-in User model provides account data and is linked to Patient through `core/models.py`.
