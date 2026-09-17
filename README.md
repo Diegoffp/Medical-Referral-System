@@ -29,3 +29,27 @@ Then visit http://localhost:8000/
 - Add User/Patient/Provider/Specialist/Admin models (see SRS class diagram)
 - Add Hospital, Service, Referral models
 - Replace placeholder pages with real search/compare/referral functionality
+
+# HR-14-Database_Models Addition
+
+Database models Patient, Referral have been added. User model (staff/admin included) exists within Django.
+User, Patient, Referral data accessible for first sprint. Granted admin access to change database data
+through localhost server above.
+
+## HR-14 setup
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+
+makemigrations: Creates migration files based on changes made to database models.
+migrate: Applies migrations to the database.
+
+## HR-14 Structure
+
+- `core/models.py` — Includes database models for Patient and Referral.
+- `core/admin.py` — Registers models for Django admin site.
+
+## Next steps (future tickets)
+- Add Availability, Provider, and Location Models
+- Replace placeholder pages with real search/compare/referral functionality
