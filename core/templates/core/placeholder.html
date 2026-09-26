@@ -2,5 +2,22 @@
 {% block title %}{{ role }} — Referral App{% endblock %}
 {% block content %}
     <h1>{{ role }} page</h1>
-    <p>Placeholder — features coming in a later sprint.</p>
+    {% if role == "Listings" %}
+    {% if referrals %}
+        <ul>
+            {% for referral in referrals %}
+                <li>
+                    {{ referral.patient.first_name }}
+                    {{ referral.patient.last_name }} -
+                    {{ referral.get_request_specialty_display }} -
+                    {{ referral.ref_date }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No referrals found.</p>
+    {% endif %}
+{% else %}
+    <p>Placeholder - features coming in a later sprint.</p>
+{% endif %}
 {% endblock %}
