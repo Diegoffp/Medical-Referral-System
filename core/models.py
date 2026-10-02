@@ -27,14 +27,31 @@ class Patient(models.Model):
     
 # Referral Database Model
 # Attributes: referral date, requested specialty
-# String representation: first name, last name, requested specialty
+# String representation: REF-#
 class Referral(models.Model):
     SPECIALTY_TYPES = [('CARDIOLOGY','Cardiology'), ('ORTHOPEDICS','Orthopedics'), ('DERMATOLOGY','Dermatology'), 
                        ('NEUROLOGY','Neurology'), ('PODIATRY','Podiatry')]
 
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
-    ref_date = models.DateField()
+    referral_date = models.DateField()
+    referral_number = models.PositiveIntegerField(unique=True, null=True)
     request_specialty = models.CharField(max_length=50, choices=SPECIALTY_TYPES)
 
     def __str__(self):
-        return f"{self.patient.first_name} {self.patient.last_name} {self.get_request_specialty_display()}"
+        return f"REF-{self.referral_number:06d}"
+
+# Provider Database Model
+# Attributes: credentials, first_name, last_name, specialty
+# String representation: CREDENTIAL_TYPE, last_name
+class Provider(models.Model):
+    CREDENTIAL_TYPES = [("MD", "MD"), ("DO", "DO"), ("NP", "NP"), ("PA", "PA")]
+    SPECIALTY_TYPES = [('CARDIOLOGY','Cardiology'), ('ORTHOPEDICS','Orthopedics'), ('DERMATOLOGY','Dermatology'), 
+                       ('NEUROLOGY','Neurology'), ('PODIATRY','Podiatry')]
+    
+    credentials = models.CharField(max_length=25, choices=CREDENTIAL_TYPES) 
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    specialty = models.CharField(max_length=50, choices=SPECIALTY_TYPES)
+
+    def __str__(self):
+            return f"{self.credentials} {self.last_name}"       

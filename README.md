@@ -54,3 +54,8 @@ migrate: Applies migrations to the database.
 - Add Availability, Provider, and Location Models
 - Replace placeholder pages with real search/compare/referral functionality. 
 - Django's built-in User model provides account data and is linked to Patient through `core/models.py`.
+
+## HR-20- Added Database_Model Provider
+
+Provider database model added. Also made minor adjustment to the referral database attributes.
+
