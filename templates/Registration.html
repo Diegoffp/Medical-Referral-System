@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registration</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon_io_4/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon_io_4/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon_io_4/favicon-16x16.png">
+    <link rel="manifest" href="favicon_io_4/site.webmanifest">
+    <link rel="stylesheet" href="css/style_4.css">
+</head>
+<body>
+    <div class="main">
+        <img src="medconnect-logo (1).png" alt="Medconnect" height="100" width="100">
+        <h2>Registration Form</h2>
+        <form action="">
+            <label for="first">First Name:</label>
+            <input type="text" id="first" name="first" required />
+
+            <label for="last">Last Name:</label>
+            <input type="text" id="last" name="last" required />
+
+            <label for="DOB">Date of Birth:</label>
+            <input type="date" id="DOB" name="DOB">
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required />
+
+            <label for="mobile">Contact:</label>
+            <input type="text" id="mobile" name="mobile" maxlength="10" required />
+
+            <label for="insurance">Insurance:</label>
+            <input type="text" id="insurance" name="insurance">
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password"
+                   pattern="^(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9])\S{8,}$" 
+                   title="Password must contain at least one number, 
+                           one alphabet, one symbol, and be at 
+                           least 8 characters long" required />
+
+            <label for="repassword">Re-type Password:</label>
+            <input type="password" id="repassword" name="repassword" required />
+
+
+            <button type="submit">
+                Submit
+            </button>
+        </form>
+    </div>
+</body>
+</html>
