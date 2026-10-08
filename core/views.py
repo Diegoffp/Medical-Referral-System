@@ -16,3 +16,6 @@ def listings(request):
 
 def appointments(request): 
     return render(request, "core/placeholder.html", {"role": "Appointments"})
+
+def create_account(request): 
+    return render(request, "core/create_account.html")
