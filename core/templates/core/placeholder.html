@@ -9,8 +9,8 @@
                 <li>
                     {{ referral.patient.first_name }}
                     {{ referral.patient.last_name }} -
-                    {{ referral.get_request_specialty_display }} -
-                    {{ referral.ref_date }}
+                    {{ referral.get_requested_specialty_display }} -
+                    {{ referral.referral_date }}
                 </li>
             {% endfor %}
         </ul>
