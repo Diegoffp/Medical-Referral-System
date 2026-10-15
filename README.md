@@ -57,6 +57,9 @@ migrate: Applies migrations to the database.
 
 ## HR-20- Added Database_Model Provider
 
-Insurance, Provider, AppointmentInfo, Cost database models added. Also made minor adjustment to the referral database attributes. 
+Insurance, Provider, AppointmentInfo, Cost, Location database models added. Also made minor adjustment to the referral database attributes. 
 Moved some TYPES to be Global for multiple entities.
+
+## Next steps (future tickets)
+- Add simulated data into the database
 
