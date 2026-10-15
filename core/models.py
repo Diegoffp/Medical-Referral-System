@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 # Database model/table creation
 # Primary key IDs are handled by Django with auto-incrementing integer
@@ -44,10 +45,10 @@ class Patient(models.Model):
 class Referral(models.Model):
     STATUS_TYPES = [('Ready','Ready'),('Accepted','Accepted')]
     
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='referrals')
+    patient = models.ForeignKey(Patient, on_delete=models.SET_NULL, null=True, blank=True, related_name='referrals')
     referral_date = models.DateField()
-    referral_number = models.PositiveIntegerField(unique=True)
-    requested_specialty = models.CharField(max_length=50, choices=SPECIALTY_TYPES, null=True)
+    referral_number = models.PositiveIntegerField(unique=True, validators=[MinValueValidator(1), MaxValueValidator(999999)])
+    requested_specialty = models.CharField(max_length=50, choices=SPECIALTY_TYPES)
     status = models.CharField(max_length=15, choices=STATUS_TYPES, default='Ready')
 
     def __str__(self):
