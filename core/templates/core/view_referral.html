@@ -17,11 +17,12 @@
     <p class="mc-crumb">Patient portal / View referral</p>
     <h1>{{ referral }}</h1>
     <div class="mc-card">
-        <div class="mc-row"><span>Patient</span><span>{{ referral.patient.first_name }} {{ referral.patient.last_name }}</span></div>
-        <div class="mc-row"><span>Requested specialty</span><span>{{ referral.get_request_specialty_display }}</span></div>
+        <div class="mc-row"><span>Patient</span><span>{% if referral.patient %}{{ referral.patient.first_name }} {{ referral.patient.last_name }}{% else %}Not assigned{% endif %}</span></div>
+        <div class="mc-row"><span>Requested specialty</span><span>{{ referral.get_requested_specialty_display }}</span></div>
+        <div class="mc-row"><span>Status</span><span>{{ referral.status }}</span></div>
         <div class="mc-row"><span>Referral date</span><span>{{ referral.referral_date }}</span></div>
         <a class="mc-btn" href="{% url 'listings' %}">View Matching Specialists</a>
     </div>
-    <a class="mc-back" href="{% url 'portal' %}"> Enter a different referral ID</a>
+    <a class="mc-back" href="{% url 'portal' %}">&larr; Enter a different referral ID</a>
 </div>
 {% endblock %}
