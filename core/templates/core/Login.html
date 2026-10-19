@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="backlink" href="Portal page.html">
+    <link rel="backlink" href="Listings page.html">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon_io_4/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon_io_4/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon_io_4/favicon-16x16.png">
+    <link rel="manifest" href="favicon_io_4/site.webmanifest">
+</head>
+<body>
+    <div class="main">
+        <img src="medconnect-logo (1).png" alt="Medconnect" height="100" width="100"><h1>Login page</h1>
+        <h3>Enter your login credentials</h3>
+        
+        <form action="login.php" method="POST">
+            <label for="first">
+                Username:
+            </label>
+            <input type="text" id="first" name="first" 
+                placeholder="Enter your Username" required>
+
+            <label for="password">
+                Password:
+            </label>
+            <input type="password" id="password" name="password" 
+                placeholder="Enter your Password" required>
+
+            <div class="wrap">
+                <button type="submit">Submit</button>
+            </div>
+        </form>
+        
+        <p>Not registered?
+            <a href="Registration.html" style="text-decoration: underline; color: blue;">
+                Create an account
+            </a>
+        </p>
+    </div>
+</body>
+</html>
