@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Enter Referral ID - MedConnect{% endblock %}
+{% block content %}
+
+<style>
+  * { box-sizing: border-box; font-family: Arial, sans-serif; }
+  .mc-navbar {display:flex; align-items:center; justify-content: space-between; padding:14px 24px; border-bottom:1px solid #e2e2e2; }
+  .mc-brand { font-weight:700; font-size:16px; color:#1a4fd1; line-height:1.1; }
+  .mc-brand small {display:block; font-weight:400; font-size:11px; color:#888; }
+  .mc-navlinks {display:flex; gap:24px; font-size:13px; color:#555; align-items:center; }
+  .mc-navlinks .active {color:#1a4fd1; font-weight:600; }
+  .mc-navlinks .admin-badge { background:#1a4fd1; color:#fff; padding:4px 10px; border-radius:4px; }
+
+  .mc-layout {display:flex; min-height:500px; }
+  .mc-sidebar {width:220px; border-right:1px solid #eee; padding:20px 0;}
+  .mc-sidebar a {display:block; padding:10px 20px; font-size:13px; color:#555; text-decoration: none; }
+  .mc-sidebar a.active {color:#1a4fd1; font-weight:600; background:#eef2ff; border-right:3px solid #1a4fd1; }
+  .mc-sidebar a span.num {display:inline-block; width:16px; color:#1a4fd1; font-weight:600; margin-right:6px; }
+
+  .mc-main { flex:1; padding:30px 40px; }
+  .mc-crumb { font-size:12px; color:#999; margin-bottom:6px; }
+  .mc-main h1 { font-size: 20px; margin: 0 0 8px; }
+  .mc-main p.sub { font-size:13px; color:#666; margin: 0 0 24px; max-width:600px; }
+
+  .mc-card { max-width:360px; border:1px solid #e2e2e2; border-radius:8px; padding:20px; }
+  .mc-card label { font-size:13px; font-weight:600; display:block; margin-bottom:6px; }
+  .mc-card input { width:100%; height:38px; padding:0 12px; border:1px solid #d9d9d9; border-radius:6px; font-size:14px; margin-bottom:14px; }
+  .mc-card button { width:100%; height:40px; background:#1a4fd1; color:#fff; border:none; border-radius:6px; font-size:14px; cursor:pointer; }
+  .mc-card .help { font-size:12px; color:#666; text-align:center; margin:12px 0 0; }
+  .mc-error { color:#c0392b; font-size:13px; margin-top:10px; }
+</style>
+
+
+
+
+  <div class="mc-main">
+    <p class="mc-crumb">Patient portal / Get started</p>
+    <h1>Enter your referral ID</h1>
+    <p class="sub">Your referring provider gave you a referral ID when your referral was submitted. Enter it below to view your referral and choose a specialist.</p>
+
+    <div class="mc-card">
+      <form method="post">
+        {% csrf_token %}
+        <label for="referral_number">Referral ID</label>
+        <input type="text" id="referral_number" name="referral_number" placeholder="REF-2025-00482" required>
+        <button type="submit">Continue</button>
+      </form>
+      <p class="help">Don't have a referral ID? Contact your referring provider's office.</p>
+      {% if error %}
+      <p class="mc-error">{{ error }}</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

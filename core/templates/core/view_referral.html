@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}View Referral - MedConnect {% endblock %}
+{% block content %}
+<style>
+    .mc-main {max-width: 700px; margin: 40px auto; padding: 0 20px; font-family: Arial, sans-serif; }
+    .mc-crumb { font-size: 12px; color: #999; margin-bottom: 6px; }
+    .mc-main h1 {font-size: 20px; margin: 0 0 20px; }
+    .mc-card { border: 1px solid #e2e2e2; border-radius: 8px; padding: 20px; }
+    .mc-row { display: flex; justify-content: space-between; padding: 10px 0; border-top: 1px solid #eee; font-size: 14px; }
+    .mc-row:first-of-type { border-top: none; }
+    .mc-row span:first-child {color: #666; }
+    .mc-btn {display: block; text-align: center; margin-top: 20px; height: 40px; line-height: 40px; background: #1a4fd1; color: #fff; border-radius: 6px; text-decoration: none; font-size: 14px;}
+    .mc-back {display: inline-block; margin-top: 16px; font-size: 13px; color: #1a4fd1; text-decoration: none;}
+</style>
+
+<div class="mc-main">
+    <p class="mc-crumb">Patient portal / View referral</p>
+    <h1>{{ referral }}</h1>
+    <div class="mc-card">
+        <div class="mc-row"><span>Patient</span><span>{% if referral.patient %}{{ referral.patient.first_name }} {{ referral.patient.last_name }}{% else %}Not assigned{% endif %}</span></div>
+        <div class="mc-row"><span>Requested specialty</span><span>{{ referral.get_requested_specialty_display }}</span></div>
+        <div class="mc-row"><span>Status</span><span>{{ referral.status }}</span></div>
+        <div class="mc-row"><span>Referral date</span><span>{{ referral.referral_date }}</span></div>
+        <a class="mc-btn" href="{% url 'listings' %}">View Matching Specialists</a>
+    </div>
+    <a class="mc-back" href="{% url 'portal' %}">&larr; Enter a different referral ID</a>
+</div>
+{% endblock %}
