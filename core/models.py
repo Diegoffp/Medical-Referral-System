@@ -56,9 +56,9 @@ class Referral(models.Model):
 
 # Location Database Model
 # Attributes: name
-# String representation: name, scheduling_number  
+# String representation: name, scheduling_number
 class Location(models.Model):
-    LOCATION_TYPES = [('Jack Brown Medical Center', 'Jack Brown Medical Center'), ('John M Hospital Medical Center', 'John M Hospital Medical Center'), 
+    LOCATION_TYPES = [('Jack Brown Medical Center', 'Jack Brown Medical Center'), ('John M Hospital Medical Center', 'John M Hospital Medical Center'),
                         ('Coyote Medical Facility', 'Coyote Medical Facility'), ('Serrano Specialty Clinics', 'Serrano Specialty Clinics')]
 
     name = models.CharField(max_length=50, choices=LOCATION_TYPES, unique=True)
@@ -66,7 +66,7 @@ class Location(models.Model):
 
     def __str__(self):
                       return f"{self.name}:  {self.scheduling_number}"
-     
+
 # Provider Database Model
 # Attributes: credentials, first_name, last_name, specialty, accepted_insurance
 # String representation: CREDENTIAL_TYPE, last_name
@@ -112,4 +112,4 @@ class Cost(models.Model):
         constraints = [models.UniqueConstraint(fields=['appointment_info', 'insurance'], 
                       name='unique_appointment_insurance_cost')]
     def __str__(self):
-                return f"{self.appointment_info} - {self.insurance} - {self.expected_cost}" 
+                return f"{self.appointment_info} - {self.insurance} - {self.expected_cost}"
