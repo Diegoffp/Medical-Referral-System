@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 # Database model/table creation
 # Primary key IDs are handled by Django with auto-incrementing integer
@@ -44,21 +45,35 @@ class Patient(models.Model):
 class Referral(models.Model):
     STATUS_TYPES = [('Ready','Ready'),('Accepted','Accepted')]
     
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='referrals')
+    patient = models.ForeignKey(Patient, on_delete=models.SET_NULL, null=True, blank=True, related_name='referrals')
     referral_date = models.DateField()
-    referral_number = models.PositiveIntegerField(unique=True)
-    requested_specialty = models.CharField(max_length=50, choices=SPECIALTY_TYPES, null=True)
+    referral_number = models.PositiveIntegerField(unique=True, validators=[MinValueValidator(1), MaxValueValidator(999999)])
+    requested_specialty = models.CharField(max_length=50, choices=SPECIALTY_TYPES)
     status = models.CharField(max_length=15, choices=STATUS_TYPES, default='Ready')
 
     def __str__(self):
         return f"REF-{self.referral_number:06d}"
+
+# Location Database Model
+# Attributes: name
+# String representation: name, scheduling_number
+class Location(models.Model):
+    LOCATION_TYPES = [('Jack Brown Medical Center', 'Jack Brown Medical Center'), ('John M Hospital Medical Center', 'John M Hospital Medical Center'),
+                        ('Coyote Medical Facility', 'Coyote Medical Facility'), ('Serrano Specialty Clinics', 'Serrano Specialty Clinics')]
+
+    name = models.CharField(max_length=50, choices=LOCATION_TYPES, unique=True)
+    scheduling_number = models.CharField(max_length=25)
+
+    def __str__(self):
+                      return f"{self.name}:  {self.scheduling_number}"
 
 # Provider Database Model
 # Attributes: credentials, first_name, last_name, specialty, accepted_insurance
 # String representation: CREDENTIAL_TYPE, last_name
 class Provider(models.Model):
     CREDENTIAL_TYPES = [('MD', 'MD'), ('DO', 'DO'), ('NP', 'NP'), ('PA', 'PA')]
-    
+
+    location = models.ForeignKey(Location, on_delete=models.PROTECT, null=True, blank=True)
     credentials = models.CharField(max_length=25, choices=CREDENTIAL_TYPES) 
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -97,4 +112,4 @@ class Cost(models.Model):
         constraints = [models.UniqueConstraint(fields=['appointment_info', 'insurance'], 
                       name='unique_appointment_insurance_cost')]
     def __str__(self):
-                return f"{self.appointment_info} - {self.insurance} - {self.expected_cost}"       
+                return f"{self.appointment_info} - {self.insurance} - {self.expected_cost}"

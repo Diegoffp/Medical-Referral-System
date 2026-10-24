@@ -2,22 +2,40 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Referral App{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MedConnect{% endblock %}</title>
     <style>
-        body { font-family: sans-serif; margin: 0; }
-        nav { background: #2c3e50; padding: 1rem; }
-        nav a { color: white; text-decoration: none; margin-right: 1.5rem; font-weight: bold; }
+        * { box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; margin: 0; background: #f8f9fb; color: #111; }
+        .site-nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 32px; background: #fff; border-bottom: 1px solid #e2e2e2; }
+        .site-brand { font-weight: 700; font-size: 16px; color: #1a4fd1; line-height: 1.1; text-decoration: none; }
+        .site-brand small { display: block; font-weight: 400; font-size: 11px; color: #888; }
+        .site-links { display: flex; gap: 28px; font-size: 14px; }
+        .site-links a { color: #555; text-decoration: none; }
+        .site-links a.active { color: #1a4fd1; font-weight: 600; }
+        .site-user { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #333; }
+        .site-user .avatar { width: 28px; height: 28px; border-radius: 50%; background: #e2e2e2; display: inline-block; }
         main { padding: 2rem; }
     </style>
 </head>
 <body>
-    <nav>
-        <a href="{% url 'home' %}">Home</a>
-        <a href="{% url 'portal' %}">Portal</a>
-        <a href="{% url 'listings' %}">Listings</a>
-        <a href="{% url 'appointments' %}">Appointments</a>
-        <a href="{% url 'create_account' %}">Create Account</a>
+
+    {% with page=request.resolver_match.url_name %}
+    <nav class="site-nav">
+        <a class="site-brand" href="{% url 'home' %}">MedConnect<small>Referral Program</small></a>
+        <div class="site-links">
+            <a href="{% url 'home' %}" {% if page == 'home' or page == 'portal' or page == 'view_referral' %}class="active"{% endif %}>Home</a>
+            <a href="{% url 'listings' %}" {% if page == 'listings' %}class="active"{% endif %}>Specialists</a>
+            <a href="{% url 'appointments' %}" {% if page == 'appointments' %}class="active"{% endif %}>My Referrals</a>
+            <a href="{% url 'create_account' %}" {% if page == 'create_account' %}class="active"{% endif %}>Create Account</a>
+        </div>
+        <div class="site-user">
+            <span class="avatar"></span>
+            {% if user.is_authenticated %}{{ user.get_username }}{% else %}Guest{% endif %}
+        </div>
+
     </nav>
+    {% endwith %}
     <main>
         {% block content %}{% endblock %}
     </main>
