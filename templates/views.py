@@ -1,25 +1,10 @@
 from django.shortcuts import render, redirect
-from .models import Patient, Referral
+from django.contrib import messages
+from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 
-def home(request): 
-    return render(request, "core/home.html") 
-
-def portal(request): 
-    return render(request, "core/placeholder.html", {"role": "Portal"}) 
-
-def listings(request): 
-    referrals = Referral.objects.all()
-    return render(request, "core/placeholder.html", {
-    "role": "Listings",
-    "referrals": referrals
-})
-
-def appointments(request): 
-    return render(request, "core/placeholder.html", {"role": "Appointments"})
-
 def login_page(request):
-    error = "Invalid username or password."
+    error = "TEST MESSAGE"
     if request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
