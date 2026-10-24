@@ -1,65 +1,35 @@
 from django.shortcuts import render, redirect
-from django.contrib import messages
+from .models import Patient, Referral
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-from .models import *
 
-def home(request):
-    return render(request, 'Portal page.html')
+def home(request): 
+    return render(request, "core/home.html") 
+
+def portal(request): 
+    return render(request, "core/placeholder.html", {"role": "Portal"}) 
+
+def listings(request): 
+    referrals = Referral.objects.all()
+    return render(request, "core/placeholder.html", {
+    "role": "Listings",
+    "referrals": referrals
+})
+
+def appointments(request): 
+    return render(request, "core/placeholder.html", {"role": "Appointments"})
 
 def login_page(request):
+    error = "Invalid username or password."
     if request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
-        
-        # Check if a user with the provided username exists
-        if not User.objects.filter(username=username).exists():
-            # Display an error message if the username does not exist
-            messages.error(request, 'Invalid Username')
-            return redirect('/login/')
-        
-        user = authenticate(username=username, password=password)
-        
-        if user is None:
-            # Display an error message if authentication fails (invalid password)
-            messages.error(request, "Invalid Password")
-            return redirect('/login/')
-        else:
-            login(request, user)
-            return redirect('/home/')
-    
-    return render(request, 'Login.html')
 
-# Define a view function for the registration page
-def register_page(request):
-    if request.method == 'POST':
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        
-        # Check if a user with the provided username already exists
-        user = User.objects.filter(username=username)
-        
-        if user.exists():
-            # Display an information message if the username is taken
-            messages.info(request, "Username already taken!")
-            return redirect('/register/')
-        
-        # Create a new User object with the provided information
-        user = User.objects.create_user(
-            first_name=first_name,
-            last_name=last_name,
-            username=username
-        )
-        
-        # Set the user's password and save the user object
-        user.set_password(password)
-        user.save()
-        
-        # Display an information message indicating successful account creation
-        messages.info(request, "Account created Successfully!")
-        return redirect('/register/')
-    
-    return render(request, 'Registration.html')
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            error = "Invalid username or password."
+
+    return render(request, "Login.html", {"error": error})
