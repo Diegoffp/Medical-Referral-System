@@ -4,6 +4,9 @@
 
 {% block content %}
     <h1>Create Account</h1>
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
 
     <form method="post">
         {% csrf_token %}
@@ -43,18 +46,17 @@
         <label for="insurance">Insurance</label><br>
         <select id="insurance" name="insurance" required>
             <option value="">Select Insurance</option>
-            <option value="Kaiser Permanente">Kaiser Permanente</option>
-            <option value="IEHP">IEHP</option>
-            <option value="Medicare">Medicare</option>
-            <option value="Medi-Cal">Medi-Cal</option>
-            <option value="Blue Shield">Blue Shield</option>
-            <option value="Anthem Blue Cross">Anthem Blue Cross</option>
-            <option value="Aetna">Aetna</option>
+
+            {% for insurance in insurance_options %}
+                <option value="{{ insurance.name }}">
+                    {{ insurance.name }}
+                </option>
+            {% endfor %}
         </select>
         <br><br>
 
         <button type="submit">Create Account</button>
-    </form>
+        </form>
 
     <p>
         Already have an account?
