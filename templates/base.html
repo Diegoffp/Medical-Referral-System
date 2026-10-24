@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,15 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}MedConnect{% endblock %}</title>
     <style>
+
+        .site-brand { display: flex; align-items: center; gap: 24px; }
+        .site-brand img { height: 96px; width: 96px; object-fit: contain; display: block; }
+
         * { box-sizing: border-box; }
         body { font-family: Arial, sans-serif; margin: 0; background: #f8f9fb; color: #111; }
-        .site-nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 32px; background: #fff; border-bottom: 1px solid #e2e2e2; }
+        .site-nav { display: flex; align-items: center; justify-content: flex-start; gap: 36px; padding: 14px 32px; background: #fff; border-bottom: 1px solid #e2e2e2; }
         .site-brand { font-weight: 700; font-size: 16px; color: #1a4fd1; line-height: 1.1; text-decoration: none; }
         .site-brand small { display: block; font-weight: 400; font-size: 11px; color: #888; }
         .site-links { display: flex; gap: 28px; font-size: 14px; }
         .site-links a { color: #555; text-decoration: none; }
         .site-links a.active { color: #1a4fd1; font-weight: 600; }
-        .site-user { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #333; }
+        .site-user { display: flex; align-items: center; gap: 8px; margin-left: auto; font-size: 14px; color: #333; }
         .site-user .avatar { width: 28px; height: 28px; border-radius: 50%; background: #e2e2e2; display: inline-block; }
         main { padding: 2rem; }
     </style>
@@ -22,7 +27,10 @@
 
     {% with page=request.resolver_match.url_name %}
     <nav class="site-nav">
-        <a class="site-brand" href="{% url 'home' %}">MedConnect<small>Referral Program</small></a>
+        <a class="site-brand" href="{% url 'home' %}">
+    <img src="{% static 'images/medconnect-logo.png' %}" alt="MedConnect logo">
+    <span>MedConnect<small>Referral Program</small></span>
+</a>
         <div class="site-links">
             <a href="{% url 'home' %}" {% if page == 'home' or page == 'portal' or page == 'view_referral' %}class="active"{% endif %}>Home</a>
             <a href="{% url 'listings' %}" {% if page == 'listings' %}class="active"{% endif %}>Specialists</a>
