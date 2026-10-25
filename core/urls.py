@@ -9,4 +9,5 @@ urlpatterns = [
     path("appointments/", views.appointments, name="appointments"),
     path("create_account/", views.create_account, name="create_account"),
     path("referral/<int:referral_id>/", views.view_referral, name="view_referral"),
+    path("login/", views.login_page, name="login")
 ]

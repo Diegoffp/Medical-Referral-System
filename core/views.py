@@ -99,3 +99,21 @@ def create_account(request):
 def view_referral(request, referral_id):
     referral = get_object_or_404(Referral, id=referral_id)
     return render(request, "core/view_referral.html", {"referral": referral})
+
+def login_page(request):
+    error = None
+    if request.method == "POST":
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            error = "Invalid username or password."
+
+    return render(request, "Login.html", {"error": error})
+
+
