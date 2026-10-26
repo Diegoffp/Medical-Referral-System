@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db import transaction
 from django.contrib.auth.models import User
 from .models import Patient, Referral, Insurance
+from django.contrib.auth import authenticate, login
 
 
 def home(request): 
