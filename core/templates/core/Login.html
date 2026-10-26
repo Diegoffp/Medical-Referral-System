@@ -1,3 +1,6 @@
+{% extends "base.html" %}
+{% block title %}Create Account{% endblock %}
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,7 +23,7 @@
 <body>
     <div class="main">
 
-    <img src="{% static '/images/medconnect-logo.png' %}" alt="Mecconnect" height="100" width="100"><h1>Login page</h1>
+    <h1>Login page</h1>
         <h3>Enter your login credentials</h3>
 
         <form method="POST">
@@ -54,3 +57,4 @@
 
 </body>
 </html>
+{% endblock %}
