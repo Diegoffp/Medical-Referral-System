@@ -114,6 +114,6 @@ def login_page(request):
         else:
             error = "Invalid username or password."
 
-    return render(request, "Login.html", {"error": error})
+    return render(request, "core/Login.html", {"error": error})
 
 
