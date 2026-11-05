@@ -40,12 +40,14 @@ class Patient(models.Model):
         return f"{self.first_name} {self.last_name}"
     
 # Referral Database Model
-# Attributes: referral date, referral_number, requested specialty, status
+# Attributes: first_name, last_name, referral date, referral_number, requested specialty, status
 # String representation: REF-#
 class Referral(models.Model):
     STATUS_TYPES = [('Ready','Ready'),('Accepted','Accepted')]
     
     patient = models.ForeignKey(Patient, on_delete=models.SET_NULL, null=True, blank=True, related_name='referrals')
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
     referral_date = models.DateField()
     referral_number = models.PositiveIntegerField(unique=True, validators=[MinValueValidator(1), MaxValueValidator(999999)])
     requested_specialty = models.CharField(max_length=50, choices=SPECIALTY_TYPES)
@@ -107,14 +109,10 @@ class AppointmentInfo(models.Model):
 # String representation: AppointmentInfo string, insurance, cost 
 class Cost(models.Model):
     COST_TYPES = [('$0', '$0'), ('$35', '$35'), ('$65', '$65'), ('$85', '$85'),
-                  ('$100', '$100'), ('$150', '$150'), ('$275', '$275')]
+                  ('$100', '$100'), ('$150', '$150'), ('$275', '$275'), ('$450', '$450')]
     
-    appointment_info = models.ForeignKey(AppointmentInfo, on_delete=models.CASCADE)
-    insurance = models.ForeignKey(Insurance, on_delete=models.CASCADE)
+    insurance = models.OneToOneField(Insurance, on_delete=models.CASCADE)
     expected_cost = models.CharField(max_length=15, choices=COST_TYPES)
 
-    class Meta:
-        constraints = [models.UniqueConstraint(fields=['appointment_info', 'insurance'], 
-                      name='unique_appointment_insurance_cost')]
     def __str__(self):
-                return f"{self.appointment_info} - {self.insurance} - {self.expected_cost}"
+                return f"{self.insurance} - {self.expected_cost}"
