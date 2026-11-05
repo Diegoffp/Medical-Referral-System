@@ -68,7 +68,8 @@ class Location(models.Model):
                       return f"{self.name}:  {self.scheduling_number}"
 
 # Provider Database Model
-# Attributes: credentials, first_name, last_name, specialty, accepted_insurance
+# Attributes: credentials, first_name, last_name, specialty, accepted_insurance, years_of_practice, 
+#             spoken_languages, certifications, biography    
 # String representation: CREDENTIAL_TYPE, last_name
 class Provider(models.Model):
     CREDENTIAL_TYPES = [('MD', 'MD'), ('DO', 'DO'), ('NP', 'NP'), ('PA', 'PA')]
@@ -79,6 +80,10 @@ class Provider(models.Model):
     last_name = models.CharField(max_length=100)
     specialty = models.CharField(max_length=50, choices=SPECIALTY_TYPES)
     accepted_insurance = models.ManyToManyField(Insurance, related_name='providers')
+    years_of_practice = models.PositiveSmallIntegerField(null=True, blank=True)
+    spoken_languages = models.CharField(max_length=50, blank=True)
+    certifications = models.CharField(max_length=150, blank=True)
+    biography = models.TextField(blank=True)
 
     def __str__(self):
             return f"{self.credentials} {self.last_name}"       
