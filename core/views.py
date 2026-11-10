@@ -3,11 +3,14 @@ from django.db import transaction
 from django.contrib.auth.models import User
 from .models import Patient, Referral, Insurance
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 
 
+@login_required
 def home(request): 
     return render(request, "core/home.html") 
 
+@login_required
 def portal(request):
     error = None
     if request.method == "POST":
@@ -22,6 +25,7 @@ def portal(request):
         error = "No referral found with that ID."
     return render(request, "core/portal.html",{"error":error})
 
+@login_required
 def listings(request): 
     referrals = Referral.objects.all()
     return render(request, "core/placeholder.html", {
@@ -29,8 +33,10 @@ def listings(request):
     "referrals": referrals
 })
 
+@login_required
 def appointments(request): 
     return render(request, "core/placeholder.html", {"role": "Appointments"})
+
 
 
 def create_account(request):
@@ -91,12 +97,13 @@ def create_account(request):
                 "insurance_options": insurance_options,
             })
 
-        return redirect("home")
+        return redirect("login")
 
     return render(request, "core/create_account.html", {
         "insurance_options": insurance_options,
     })
 
+@login_required
 def view_referral(request, referral_id):
     referral = get_object_or_404(Referral, id=referral_id)
     return render(request, "core/view_referral.html", {"referral": referral})
