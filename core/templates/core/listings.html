@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block title %}Find Specialists - MedConnect{% endblock %}
+
+{% block content %}
+
+<style>
+    .mc-main {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    .mc-card {
+        background: #fff;
+        border: 1px solid #e2e2e2;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 16px;
+    }
+
+    .mc-card h2 {
+        color: #1a4fd1;
+        margin-top: 0;
+    }
+
+    .mc-card p {
+        font-size: 14px;
+        margin: 8px 0;
+    }
+
+    /* Specialist filter panel */
+
+    .mc-filters {
+        background: #fff;
+        border: 1px solid #e2e2e2;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 24px;
+    }
+
+    .mc-filters h2 {
+        margin-top: 0;
+        color: #1a4fd1;
+    }
+
+    .mc-filter-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+    }
+
+    .mc-filter-grid label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 6px;
+    }
+
+    .mc-filter-grid select,
+    .mc-filter-grid input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 14px;
+        box-sizing: border-box;
+    }
+
+    .mc-filter-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 20px;
+    }
+
+    .mc-filter-btn {
+        background: #1a4fd1;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .mc-clear-btn {
+        background: #eee;
+        color: #333;
+        border-radius: 6px;
+        padding: 10px 20px;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .mc-filter-btn:hover {
+        background: #153da5;
+    }
+
+    .mc-clear-btn:hover {
+        background: #ddd;
+    }
+</style>
+
+<div class="mc-main">
+    <h1>Find Specialists</h1>
+
+<form method="GET" action="{% url 'listings' %}" class="mc-filters">
+    <h2>Filter Specialists</h2>
+
+    <div class="mc-filter-grid">
+
+        <div>
+            <label for="specialty">Specialty</label>
+            <select name="specialty" id="specialty">
+                <option value="">All specialties</option>
+                {% for value, label in specialties %}
+                    <option value="{{ value }}"
+                        {% if selected_specialty == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="location">Location</label>
+            <select name="location" id="location">
+                <option value="">All locations</option>
+                {% for location in locations %}
+                    <option value="{{ location.id }}"
+                        {% if selected_location == location.id|stringformat:"s" %}selected{% endif %}>
+                        {{ location.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="insurance">Accepted Insurance</label>
+            <select name="insurance" id="insurance">
+                <option value="">All insurance plans</option>
+                {% for insurance in insurances %}
+                    <option value="{{ insurance.id }}"
+                        {% if selected_insurance == insurance.id|stringformat:"s" %}selected{% endif %}>
+                        {{ insurance.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="experience">Minimum Years of Practice</label>
+            <input type="number" name="experience" id="experience"
+                min="0" max="100" placeholder="Any experience"
+                value="{{ selected_experience }}">
+        </div>
+
+        <div>
+            <label for="language">Spoken Language</label>
+            <input type="text" name="language" id="language"
+                placeholder="e.g. English"
+                value="{{ selected_language }}">
+        </div>
+
+    </div>
+
+    <div class="mc-filter-actions">
+        <button type="submit" class="mc-filter-btn">
+            Apply Filters
+        </button>
+
+        <a href="{% url 'listings' %}" class="mc-clear-btn">
+            Clear Filters
+        </a>
+    </div>
+</form>
+
+    {% if selected_specialty %}
+        <p>Showing specialists in {{ selected_specialty }}</p>
+    {% else %}
+        <p>Showing all available specialists</p>
+    {% endif %}
+
+    {% for specialist in specialists %}
+        <div class="mc-card">
+            <h2>
+                {{ specialist.first_name }}
+                {{ specialist.last_name }},
+                {{ specialist.credentials }}
+            </h2>
+
+            <p><strong>Specialty:</strong> {{ specialist.specialty }}</p>
+            <p><strong>Location:</strong> {{ specialist.location.name }}</p>
+            <p><strong>Years of Practice:</strong> {{ specialist.years_of_practice|default_if_none:"Not specified" }}</p>
+            <p><strong>Languages:</strong> {{ specialist.spoken_languages }}</p>
+            <p><strong>Certifications:</strong> {{ specialist.certifications }}</p>
+
+            <p><strong>Accepted Insurance:</strong>
+                {% for insurance in specialist.accepted_insurance.all %}
+                    {{ insurance.name }}{% if not forloop.last %}, {% endif %}
+                {% empty %}
+                    Not specified
+                {% endfor %}
+            </p>
+
+            <p>{{ specialist.biography }}</p>
+        </div>
+    {% empty %}
+        <p>No matching specialists found.</p>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -21,7 +21,7 @@
         <div class="mc-row"><span>Requested specialty</span><span>{{ referral.get_requested_specialty_display }}</span></div>
         <div class="mc-row"><span>Status</span><span>{{ referral.status }}</span></div>
         <div class="mc-row"><span>Referral date</span><span>{{ referral.referral_date }}</span></div>
-        <a class="mc-btn" href="{% url 'listings' %}">View Matching Specialists</a>
+        <a class="mc-btn" href="{% url 'listings' %}?specialty={{ referral.requested_specialty|urlencode }}">View Matching Specialists</a>
     </div>
     <a class="mc-back" href="{% url 'portal' %}">&larr; Enter a different referral ID</a>
 </div>
