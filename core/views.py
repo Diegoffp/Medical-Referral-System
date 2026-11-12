@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import transaction
 from django.contrib.auth.models import User
-from .models import Patient, Referral, Insurance
+from .models import Patient, Referral, Insurance, Provider, Location
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 
@@ -47,13 +47,45 @@ def portal(request):
         error = "No referral found with that ID."
     return render(request, "core/portal.html",{"error":error})
 
+
 @login_required
-def listings(request): 
-    referrals = Referral.objects.all()
-    return render(request, "core/placeholder.html", {
-    "role": "Listings",
-    "referrals": referrals
-})
+def listings(request):
+    specialty = request.GET.get("specialty", "")
+    location = request.GET.get("location", "")
+    insurance = request.GET.get("insurance", "")
+    experience = request.GET.get("experience", "")
+    language = request.GET.get("language", "").strip()
+
+    specialists = Provider.objects.all()
+
+    if specialty:
+        specialists = specialists.filter(specialty=specialty)
+
+    if location.isdigit():
+        specialists = specialists.filter(location_id=location)
+
+    if insurance.isdigit():
+        specialists = specialists.filter(accepted_insurance__id=insurance)
+
+    if experience.isdigit():
+        specialists = specialists.filter(years_of_practice__gte=int(experience))
+
+    if language:
+        specialists = specialists.filter(spoken_languages__icontains=language)
+
+    specialists = specialists.distinct().order_by("last_name", "first_name")
+
+    return render(request, "core/listings.html", {
+        "specialists": specialists,
+        "specialties": Provider._meta.get_field("specialty").choices,
+        "locations": Location.objects.all(),
+        "insurances": Insurance.objects.all(),
+        "selected_specialty": specialty,
+        "selected_location": location,
+        "selected_insurance": insurance,
+        "selected_experience": experience,
+        "selected_language": language
+    })
 
 @login_required
 def appointments(request): 
