@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Edit Your Account</title>
+    </head>
+    <body>
+
+        <h1>Edit Your Account</h1>
+
+        <form action="{% url 'edit_account' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <h2>Profile Avatar</h2>
+
+            <img id="avatarPreview" src="images/default_avatar.png" alt="Profile_Avatar" width="100" height="100"><br><br>
+
+            <label for="avatar">Choose New Avatar:</label>
+
+            <input type="file" id="avatar" name="avatar" accept="image/*"><br><br>
+
+            <label for="username">Username:</label>
+
+            <input type="text" id="username" name="username" autocomplete="username"><br><br>
+
+            <label for="email">Email:</label>
+
+            <input type="email" id="email" name="email" autocomplete="email"><br><br>
+
+            <label for="password">Password:</label>
+
+            <input type="password" id="password" name="password" autocomplete="new-password"><br><br>
+
+            <label for="verify_password">Verify Password:</label>
+
+            <input type="password" id="verify_password" name="verify_password" autocomplete="new-password">
+
+            <input type="submit" value="Update Account">
+
+        </form>
+        
+    </body>
+</html>
