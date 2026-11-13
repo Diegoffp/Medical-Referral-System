@@ -179,6 +179,7 @@ def login_page(request):
     return render(request, "core/Login.html", {"error": error})
 
 def edit_account(request):
+    error = None
     if request.method == "POST":
         user = request.user
 
@@ -186,7 +187,6 @@ def edit_account(request):
         email = request.POST.get("email")
         password = request.POST.get("password")
         verify_password = request.POST.get("verify_password")
-        avatar = request.FILES.get("avatar")
 
         if username:
             user.username = username
@@ -196,8 +196,10 @@ def edit_account(request):
 
         if password and password == verify_password:
             user.set_password(password)
+        else:
+            error = "Invalid username or password."
 
         user.save()
 
         return redirect("home")
-    return render(request, "edit_account.html")
+    return render(request, "core/edit_account.html", {"error": error})
