@@ -178,4 +178,30 @@ def login_page(request):
 
     return render(request, "core/Login.html", {"error": error})
 
+@login_required
+def edit_account(request):
+    error = None
+    
+    if request.method == "POST":
+        user = request.user
 
+        username = request.POST.get("username")
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+        verify_password = request.POST.get("verify_password")
+
+        if username:
+            user.username = username
+
+        if email:
+            user.email = email
+        if password:
+            if password != verify_password:
+                error = "Passwords do not match."
+                return render(request, "core/edit_account.html", {"error": error})
+            user.set_password(password)
+
+        user.save()
+
+        return redirect("home")
+    return render(request, "core/edit_account.html", {"error": error})
