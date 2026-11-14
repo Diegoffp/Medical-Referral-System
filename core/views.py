@@ -180,12 +180,13 @@ def login_page(request):
 
 @login_required
 def edit_account(request):
+    error = None
     
     if request.method == "POST":
         user = request.user
 
-        user.username = request.POST.get("username")
-        user.email = request.POST.get("email")
+        username = request.POST.get("username")
+        email = request.POST.get("email")
         password = request.POST.get("password")
         verify_password = request.POST.get("verify_password")
 
@@ -194,11 +195,11 @@ def edit_account(request):
 
         if email:
             user.email = email
-
-        if password and password == verify_password:
+        if password:
+            if password != verify_password:
+                error = "Passwords do not match."
+                return render(request, "core/edit_account.html", {"error": error})
             user.set_password(password)
-        else:
-            error = "Invalid username or password."
 
         user.save()
 
