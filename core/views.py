@@ -178,7 +178,7 @@ def login_page(request):
 
     return render(request, "core/Login.html", {"error": error})
 
-@login required
+@login_required
 def edit_account(request):
     
     if request.method == "POST":
