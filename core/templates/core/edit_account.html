@@ -20,13 +20,22 @@
         <form action="{% url 'edit_account' %}" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
 
+            {% if error %}
+                <div class="error">
+                    {{ error }}
+                </div>
+            {% endif %}
+
             <label for="username">Username:</label>
 
-            <input type="text" id="username" name="username" autocomplete="username"><br><br>
+            <input type="text" id="username" name="username" value="{{ request.user.username }}" autocomplete="username"><br><br>
 
             <label for="email">Email:</label>
 
-            <input type="email" id="email" name="email" autocomplete="email"><br><br>
+            <input type="email" id="email" name="email" value="{{ request.user.email }}" autocomplete="email"><br><br>
+
+            <label>Current Password:</label>
+            <input type="password" name="current_password" autocomplete="current_password"><br><br>
 
             <label for="password">Password:</label>
 
