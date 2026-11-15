@@ -193,22 +193,21 @@ def edit_account(request):
         verify_password = request.POST.get("verify_password")
 
         if username:
-            user.username = username
+            if User.objects.filter(username=username).exclude(id=user.id).exists():
+                error = "Username already exists."
+                return render(request, "core/edit_account.html", {"error": error})
 
-        if User.objects.filter(username=username).exclude(id=user.id).exists():
-            error = "Username already exists."
-            return render(request, "core/edit_account.html", {"error": error})
+        user.username = username
 
         if email:
             user.email = email
 
         if not user.check_password(current_password):
-            error = "Current password is incorrect."
+            return render(request, "core/edit_account.html", {"error": "Current password is incorrect."})
             
         if password:
             if password != verify_password:
-                error = "Passwords do not match."
-                return render(request, "core/edit_account.html", {"error": error})
+                return render(request, "core/edit_account.html", {"error": "Passwords do not match."})
             user.set_password(password)
 
         user.save()
