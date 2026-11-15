@@ -31,7 +31,9 @@
 </style>
 
 
-
+  {% if admin_error %}
+      <p style="color: red;">{{ admin_error }}</p>
+  {% endif %}
 
   <div class="mc-main">
     <p class="mc-crumb">Patient portal / Get started</p>

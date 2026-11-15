@@ -4,6 +4,11 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Edit Your Account</title>
+        <style>
+            .AccountDelete{
+                color: rgb(134, 4, 4);
+            }
+        </style>
     </head>
     <body>
 
@@ -14,7 +19,7 @@
         {% endblock %}
 
         {% block content %}
-
+        
         <h1>Edit Your Account</h1>
 
         <form action="{% url 'edit_account' %}" method="POST" enctype="multipart/form-data">
@@ -38,6 +43,15 @@
 
             <input type="submit" value="Update Account">
 
+            <br><br><br><br>
+            <p class="AccountDelete">Delete account below, deletion of account is permenant.</p>
+            <label for="confirmation">Type DELETE to confirm.</label>
+            <input type="text" id="confirmation" name="confirmation" autocomplete="off" required>
+            <button type="submit">Delete My Account</button>
+            {% if error %}
+                <p style="color: red;">{{ error }}</p>
+            {% endif %}
+            <a href="{% url 'home' %}">Cancel changes</a>
         </form>
 
         {% endblock %}

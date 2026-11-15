@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from .models import Patient, Referral, Insurance, Provider, Location
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.contrib.auth import logout
 
 
 @login_required
@@ -180,7 +182,13 @@ def login_page(request):
 
 @login_required
 def edit_account(request):
+    admin_error = None
     error = None
+    delete_success = None
+    
+    if request.user.is_staff:
+        admin_error = "Admins utlize the admin portal to modify admin accounts."
+        return render(request, "core/portal.html", {"admin_error": admin_error})
     
     if request.method == "POST":
         user = request.user
@@ -189,6 +197,7 @@ def edit_account(request):
         email = request.POST.get("email")
         password = request.POST.get("password")
         verify_password = request.POST.get("verify_password")
+        confirmation = request.POST.get("confirmation", "").strip()
 
         if username:
             user.username = username
@@ -203,5 +212,11 @@ def edit_account(request):
 
         user.save()
 
-        return redirect("home")
+        if confirmation == "DELETE":
+            logout(request)
+            user.delete()
+            delete_success = "Your account has been deleted."
+            return render(request, "core/Login.html", {"delete_success": delete_success})
+        else:
+            error = 'You must type "DELETE" to confirm.'
     return render(request, "core/edit_account.html", {"error": error})
