@@ -32,9 +32,9 @@
 
             <input type="email" id="email" name="email" value="{{ request.user.email }}" autocomplete="email"><br><br>
 
-            <label>Current Password:</label>
-            <input type="password" name="current_password" autocomplete="current_password"><br><br>
-
+            <label for="current_password">Current Password:</label>
+            <input type="password" id="current_password" name="current_password" autocomplete="current-password">
+            
             <label for="password">Password:</label>
 
             <input type="password" id="password" name="password" autocomplete="new-password"><br><br>

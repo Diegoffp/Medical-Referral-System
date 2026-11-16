@@ -18,6 +18,10 @@
         <h1>Edit Your Account</h1>
 
         <form action="{% url 'edit_account' %}" method="POST" enctype="multipart/form-data">
+            {% if error %}
+                <p style="color:red;">{{ error }}</p>
+            {% endif %}
+
             {% csrf_token %}
 
             <label for="username">Username:</label>
@@ -27,6 +31,9 @@
             <label for="email">Email:</label>
 
             <input type="email" id="email" name="email" autocomplete="email"><br><br>
+
+            <label for="current_password">Current Password:</label>
+            <input type="password" id="current_password" name="current_password" autocomplete="current-password">
 
             <label for="password">Password:</label>
 
