@@ -20,7 +20,7 @@ def portal(request):
         error = "Your account is not linked to a patient profile."
         return render(request, "core/portal.html", {
             "error": error,
-            "referreal": Referral.objects.none(),
+            "referreals": Referral.objects.none(),
         })
     referrals = Referral.objects.filter(
         patient=patient
