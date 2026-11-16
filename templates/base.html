@@ -42,6 +42,7 @@
             <a href="{% url 'create_account' %}" {% if page == 'create_account' %}class="active"{% endif %}>Create Account</a>
             <a href="{% url 'login' %}" {% if page == 'login' %}class="active"{% endif %}>Login</a>
             <a href="{% url 'edit_account' %}" {% if page == 'edit_account' %}class="active"{% endif %}>Edit Account</a>
+            {% else %}
         </div>
         <div class="site-user">
             <span class="avatar"></span>
