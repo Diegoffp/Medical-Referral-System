@@ -14,8 +14,17 @@ def home(request):
 def portal(request):
     error = None
 
+    try:
+        patient = request.user.patient
+    except Patient.DoesNotExist:
+        error = "Your account is not linked to a patient profile."
+        return render(request, "core/portal.html", {
+            "error": error,
+            "referrals": Referral.objects.none(),
+        })
+
     referrals = Referral.objects.filter(
-        patient_user=request.user
+        patient=patient
     ).order_by("-referral_date")
 
     if request.method == "POST":
@@ -24,18 +33,13 @@ def portal(request):
         try:
             referral = referrals.get(id=referral_id)
             return redirect("view_referral", referral_id=referral.id)
-
         except (Referral.DoesNotExist, ValueError, TypeError):
             error = "Please select a valid referral."
 
-    return render(request, "core/portal.html",(
+    return render(request, "core/portal.html", {
         "error": error,
         "referrals": referrals,
     })
-
-        
-   
-
 
 @login_required
 def listings(request):
