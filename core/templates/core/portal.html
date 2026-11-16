@@ -35,17 +35,28 @@
 
   <div class="mc-main">
     <p class="mc-crumb">Patient portal / Get started</p>
-    <h1>Enter your referral ID</h1>
-    <p class="sub">Your referring provider gave you a referral ID when your referral was submitted. Enter it below to view your referral and choose a specialist.</p>
+    <h1>Select your referrals</h1>
+    <p class="sub">Select one of your referrals below to view its details and choose a specialist.</p>
 
     <div class="mc-card">
       <form method="post">
         {% csrf_token %}
-        <label for="referral_number">Referral ID</label>
-        <input type="text" id="referral_number" name="referral_number" placeholder="REF-012345" required>
+        <label for="referral_id">Select your referral</label>
+       
+        <select id="referral_id" name="referral_id" required>
+          <option value="">Choose a referral</option>
+
+          {% for referral in referrals %}
+            <option value="{{ referral.id }}">
+              {{ referral }} — {{ referral.get_requested_specialty_display }} — {{ referral.status }}
+            </option>
+          {% empty %}
+            <option value="">No referrals available</option>
+          {% endfor %}
+        </select>
         <button type="submit">Continue</button>
       </form>
-      <p class="help">Don't have a referral ID? Contact your referring provider's office.</p>
+      <p class="help">Need help finding a referral? Contact your referring provider's office.</p>
       {% if error %}
       <p class="mc-error">{{ error }}</p>
       {% endif %}
