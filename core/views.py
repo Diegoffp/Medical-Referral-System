@@ -13,39 +13,28 @@ def home(request):
 @login_required
 def portal(request):
     error = None
-    
-    if request.method == "POST":
-        raw = request.POST.get("referral_number", "").strip().upper()
-        digits = raw.replace("REF-", "")
-        
-        if digits.isdigit():
-            try:
-                referral = Referral.objects.get(referral_number=int(digits))
-                same_first_name = request.user.first_name.strip().lower() == referral.first_name.strip().lower() # compares user/referral first name
-                same_last_name = request.user.last_name.strip().lower() == referral.last_name.strip().lower() # compares user/referral last name
-                
-                try:
-                    patient = request.user.patient # grabs user patient attribute
-                except Patient.DoesNotExist: # Admins need user login to test patient portal -> patient object does not exist for them
-                    if request.user.is_staff:
-                        error = "You're logged in as an admin. Log out and sign in as a patient to use the patient portal."
-                        return render(request, "core/portal.html", {"error": error}) 
-                
-                if not(same_first_name and same_last_name): # throws error if user does not match referral records
-                        error = "This referral does not match your records."
-                        return render(request, "core/portal.html",{"error":error})
-                
-                if referral.patient is None: # assigns referral to patient
-                    referral.patient = patient
-                    referral.save()
-                
-                return redirect("view_referral", referral_id=referral.id)
-                
-            except Referral.DoesNotExist:
-                pass
 
-        error = "No referral found with that ID."
-    return render(request, "core/portal.html",{"error":error})
+    referrals = Referral.objects.filter(
+        patient_user=request.user
+    ).order_by("-referral_date")
+
+    if request.method == "POST":
+        referral_id = request.POST.get("referral_id")
+
+        try:
+            referral = referrals.get(id=referral_id)
+            return redirect("view_referral", referral_id=referral.id)
+
+        except (Referral.DoesNotExist, ValueError, TypeError):
+            error = "Please select a valid referral."
+
+    return render(request, "core/portal.html",(
+        "error": error,
+        "referrals": referrals,
+    })
+
+        
+   
 
 
 @login_required
