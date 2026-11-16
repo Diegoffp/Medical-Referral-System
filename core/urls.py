@@ -10,6 +10,5 @@ urlpatterns = [
     path("create_account/", views.create_account, name="create_account"),
     path("referral/<int:referral_id>/", views.view_referral, name="view_referral"),
     path("login/", views.login_page, name="login"),
-    path("edit_account/", views.edit_account, name="edit_account"),
-    path("logout/", auth_views.LogoutView.as_view(), name="logout")
+    path("edit_account/", views.edit_account, name="edit_account")
 ]
