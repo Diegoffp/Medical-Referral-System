@@ -186,8 +186,8 @@ def edit_account(request):
     if request.method == "POST":
         user = request.user
 
-        username = request.POST.get("username")
-        email = request.POST.get("email")
+        username = request.POST.get("username").strip()
+        email = request.POST.get("email").strip()
         current_password = request.POST.get("current_password")
         password = request.POST.get("password")
         verify_password = request.POST.get("verify_password")

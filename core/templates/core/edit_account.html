@@ -17,6 +17,8 @@
 
         <h1>Edit Your Account</h1>
 
+        <p>Update your account information below, enter the fields you want to change before submitting. Leave the password fields blank if you do not wish to change your password.</p>
+
         <form action="{% url 'edit_account' %}" method="POST" enctype="multipart/form-data">
             {% if error %}
                 <p style="color:red;">{{ error }}</p>
