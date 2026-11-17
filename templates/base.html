@@ -20,6 +20,9 @@
         .site-links a.active { color: #1a4fd1; font-weight: 600; }
         .site-user { display: flex; align-items: center; gap: 8px; margin-left: auto; font-size: 14px; color: #333; }
         .site-user .avatar { width: 28px; height: 28px; border-radius: 50%; background: #e2e2e2; display: inline-block; }
+        .site-user form {margin: 0;}
+        .logout-btn {background: none; border: 1px solid #1a4fd1; color: #1a4fd1; border-radius: 6px; padding: 4px 10px; font-size: 13px; cursor: pointer; }
+        .logout-btn:hover {background: #1a4fd1; color: #fff; }
         main { padding: 2rem; }
     </style>
 </head>
@@ -35,12 +38,22 @@
             <a href="{% url 'home' %}" {% if page == 'home' or page == 'portal' or page == 'view_referral' %}class="active"{% endif %}>Home</a>
             <a href="{% url 'listings' %}" {% if page == 'listings' %}class="active"{% endif %}>Specialists</a>
             <a href="{% url 'appointments' %}" {% if page == 'appointments' %}class="active"{% endif %}>My Referrals</a>
+            {% if not user.is_authenticated %}
             <a href="{% url 'create_account' %}" {% if page == 'create_account' %}class="active"{% endif %}>Create Account</a>
             <a href="{% url 'login' %}" {% if page == 'login' %}class="active"{% endif %}>Login</a>
+            {% endif %}
         </div>
         <div class="site-user">
             <span class="avatar"></span>
-            {% if user.is_authenticated %}{{ user.get_username }}{% else %}Guest{% endif %}
+            {% if user.is_authenticated %}
+                {{ user.get_username }}
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-btn">Log out</button>
+                </form>
+                {% else %}
+                    Guest
+                {% endif %}
         </div>
 
     </nav>
