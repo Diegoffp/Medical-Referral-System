@@ -5,6 +5,7 @@ from .models import Patient, Referral, Insurance, Provider, Location
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth import authenticate, logout
 
 
 @login_required
@@ -178,6 +179,10 @@ def login_page(request):
             error = "Invalid username or password."
 
     return render(request, "core/Login.html", {"error": error})
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
 
 @login_required
 def edit_account(request):
