@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}My Referrals - MedConnect{% endblock %}
+{% block content %}
+<style>
+    .mc-main { max-width: 700px; margin: 40px auto; padding: 0 20px; font-family: Arial, sans-serif; }
+    .mc-main h1 { font-size: 20px; margin: 0 0 20px; }
+    .mc-card { background: #fff; border: 1px solid #e2e2e2; border-radius: 8px; padding: 16px 20px; margin-bottom: 12px; }
+    .mc-card h2 { font-size: 16px; margin: 0 0 8px; }
+    .mc-card h2 a { color: #1a4fd1; text-decoration: none; }
+    .mc-card p { font-size: 14px; margin: 4px 0; color: #444; }
+    .mc-empty { font-size: 14px; color: #666; }
+    .mc-error { color: #c0392b; font-size: 13px; }
+</style>
+
+<div class="mc-main">
+    <h1>My Referrals</h1>
+
+    {% if error %}
+        <p class="mc-error">{{ error }}</p>
+    {% endif %}
+
+    {% for referral in referrals %}
+        <div class="mc-card">
+            <h2><a href="{% url 'view_referral' referral.id %}">{{ referral }}</a></h2>
+            <p><strong>Specialty:</strong> {{ referral.get_requested_specialty_display }}</p>
+            <p><strong>Status:</strong> {{ referral.status }}</p>
+            <p><strong>Referral date:</strong> {{ referral.referral_date }}</p>
+        </div>
+    {% empty %}
+        {% if not error %}
+            <p class="mc-empty">You don't have any referrals yet. <a href="{% url 'portal' %}">Enter a referral ID</a> to add one.</p>
+        {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}

@@ -89,9 +89,16 @@ def listings(request):
 
 @login_required
 def appointments(request): 
-    return render(request, "core/placeholder.html", {"role": "Appointments"})
+    try:
+        patient = request.user.patient
+    except Patient.DoesNotExist:
+        return render(request, "core/my_referrals.html", {
+            "referrals": Referral.objects.none(),
+            "error": "Your account is not linked to a patient profile.",
+        })
 
-
+    referrals = Referral.objects.filter(patient=patient).order_by("-referral_date")
+    return render(request, "core/my_referrals.html", {"referrals": referrals})
 
 def create_account(request):
     insurance_options = Insurance.objects.all()
