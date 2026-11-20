@@ -92,7 +92,7 @@ def listings(request):
                     insurance_id=patient.insurance_id
                 ).first()
 
-                specialist.dispaly_cost = (
+                specialist.display_cost = (
                     cost.expected_cost
                     if cost and cost.expected_cost
                     else "Not specified"
