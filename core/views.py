@@ -94,7 +94,7 @@ def listings(request):
 
                 specialist.dispaly_cost = (
                     cost.expected_cost
-                    if cost
+                    if cost and cost.expected_cost
                     else "Not specified"
                 )
             else:
