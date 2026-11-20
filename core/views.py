@@ -73,15 +73,15 @@ def listings(request):
     except Patient.DoesNotExist:
         patient = None
 
-    for specialist in specialist:
+    for specialist in specialists:
         appointment = AppointmentInfo.objects.filter(provider=specialist).first()
         specialist.display_wait_time = (
-            appointment.wait_timme
+            appointment.wait_time
             if appointment
             else "Not specified"
         )
 
-        if patient and patient.Insurance:
+        if patient and patient.insurance:
             specialist.is_in_network = (specialist.accepted_insurance.filter(id=patient.insurance.id).exists())
             cost = Cost.objects.filter(insurance_id=patient.insurance_id).first()
             specialist.display_cost = (
