@@ -68,6 +68,37 @@ def listings(request):
 
     specialists = specialists.distinct().order_by("last_name", "first_name")
 
+    try:
+        patient = request.user.patient
+    except Patient.DoesNotExist:
+        patient = None
+
+    for specialist in specialist:
+        appointment = AppointmentInfo.objects.filter(provider=specialist).first()
+        specialist.display_wait_time = (
+            appointment.wait_timme
+            if appointment
+            else "Not specified"
+        )
+
+        if patient and patient.Insurance:
+            specialist.is_in_network = (specialist.accepted_insurance.filter(id=patient.insurance.id).exists())
+            cost = Cost.objects.filter(insurance_id=patient.insurance_id).first*(
+            specialist.display_cost = (
+                cost.expected_cost
+                if cost
+                else "Not specified"
+            )
+        else:
+            specialist.is_in_network = False
+            specialist.display_cost = "Not specified"
+
+        specialist.network_status = (
+            "In-house"
+            if specialist.is_in_network
+            else "Out-of-house"
+        )
+
     return render(request, "core/listings.html", {
         "specialists": specialists,
         "specialties": Provider._meta.get_field("specialty").choices,
