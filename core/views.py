@@ -83,7 +83,7 @@ def listings(request):
 
         if patient and patient.Insurance:
             specialist.is_in_network = (specialist.accepted_insurance.filter(id=patient.insurance.id).exists())
-            cost = Cost.objects.filter(insurance_id=patient.insurance_id).first*(
+            cost = Cost.objects.filter(insurance_id=patient.insurance_id).first()
             specialist.display_cost = (
                 cost.expected_cost
                 if cost
