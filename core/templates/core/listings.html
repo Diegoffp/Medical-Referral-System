@@ -190,6 +190,7 @@
 
             <p><strong>Specialty:</strong> {{ specialist.specialty }}</p>
             <p><strong>Location:</strong> {{ specialist.location.name }}</p>
+            <p><strong>Scheduling contact:</strong> {{ specialist.location.scheduling_number|default:"Not specified" }}</p>
             <p><strong>Status:</strong> {{ specialist.network_status }}</p>
             <p><strong>Estimated cost:</strong> {{ specialist.display_cost|default:"Not specified" }}</p>
             <p><strong>Wait time:</strong> {{ specialist.display_wait_time }}</p>
