@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import transaction
 from django.contrib.auth.models import User
-from .models import Patient, Referral, Insurance, Provider, Location
+from .models import Patient, Referral, Insurance, Provider, Location, AppontmentInfo, Cost,
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 
