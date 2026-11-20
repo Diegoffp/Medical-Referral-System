@@ -82,13 +82,29 @@ def listings(request):
         )
 
         if patient and patient.insurance:
-            specialist.is_in_network = (specialist.accepted_insurance.filter(id=patient.insurance.id).exists())
-            cost = Cost.objects.filter(insurance_id=patient.insurance_id).first()
-            specialist.display_cost = (
-                cost.expected_cost
-                if cost
-                else "Not specified"
+            specialist.is_in_network = (
+                specialist.accepted_insurance.filter(
+                    id=patient.insurance.id
+                ).exists()
             )
+            if specialist.is_in_network:
+                cost = Cost.objects.filter(
+                    insurance_id=patient.insurance_id
+                ).first()
+
+                specialist.dispaly_cost = (
+                    cost.expected_cost
+                    if cost
+                    else "Not specified"
+                )
+            else:
+                specialist.display_cost = max(
+                    Cost.COST_TYPES,
+                    key=lambda choice: int(
+                        choice[0].replace("$", "")
+                    )
+                )[0]
+                                                                                  
         else:
             specialist.is_in_network = False
             specialist.display_cost = "Not specified"
