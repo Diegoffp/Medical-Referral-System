@@ -199,7 +199,8 @@ def edit_account(request):
 
         if not user.check_password(current_password):
             return render(request, "core/edit_account.html", {"error": "Current password is incorrect."})
-
+        
+        # Account deletion block.
         if "delete_account" in request.POST:
             if confirmation == "DELETE":
                 user.delete()
