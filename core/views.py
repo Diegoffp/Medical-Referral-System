@@ -184,24 +184,24 @@ def edit_account(request):
     if request.method == "POST":
         user = request.user
 
-        username = request.POST.get("username").strip()
-        email = request.POST.get("email").strip()
-        current_password = request.POST.get("current_password")
-        password = request.POST.get("password")
-        verify_password = request.POST.get("verify_password")
+        username = request.POST.get("username","").strip()
+        email = request.POST.get("email","").strip()
+        current_password = request.POST.get("current_password","")
+        password = request.POST.get("password","")
+        verify_password = request.POST.get("verify_password","")
+
+        if not user.check_password(current_password):
+            return render(request, "core/edit_account.html", {"error": "Current password is incorrect."})
 
         if username:
             if User.objects.filter(username=username).exclude(id=user.id).exists():
                 error = "Username already exists."
                 return render(request, "core/edit_account.html", {"error": error})
 
-        user.username = username
+            user.username = username
 
         if email:
             user.email = email
-
-        if not user.check_password(current_password):
-            return render(request, "core/edit_account.html", {"error": "Current password is incorrect."})
             
         if password:
             if password != verify_password:

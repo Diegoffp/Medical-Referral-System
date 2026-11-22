@@ -1,56 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Edit Your Account</title>
-    </head>
-    <body>
+{% extends 'base.html' %}
 
-        {% extends 'base.html' %}
+{% block title %}
+    Edit Your Account
+{% endblock %}
 
-        {% block title %}
-            Edit Your Account
-        {% endblock %}
+{% block content %}
 
-        {% block content %}
+<h1>Edit Your Account</h1>
 
-        <h1>Edit Your Account</h1>
+<form action="{% url 'edit_account' %}" method="POST">
+    {% if error %}
+        <p style="color:red;">{{ error }}</p>
+    {% endif %}
 
-        <p>Update your account information below, enter the fields you want to change before submitting. Leave the password fields blank if you do not wish to change your password.</p>
+    {% csrf_token %}
 
-        <form action="{% url 'edit_account' %}" method="POST" enctype="multipart/form-data">
-            {% if error %}
-                <p style="color:red;">{{ error }}</p>
-            {% endif %}
+    <p>
+        Current Username: {{ request.user.username }}<br>
+        Current Email: {{ request.user.email }}
+    </p>
+    
+    <label for="username">New Username:</label>
 
-            {% csrf_token %}
+    <input type="text" id="username" name="username" autocomplete="username"><br><br>
+    
+    <label for="email">New Email:</label>
 
-            <label for="username">Username:</label>
+    <input type="email" id="email" name="email" autocomplete="email"><br><br>
 
-            <input type="text" id="username" name="username" value="{{ request.user.username }}" autocomplete="username"><br><br>
+    <label for="current_password">Current Password:</label>
 
-            <label for="email">Email:</label>
+    <input type="password" id="current_password" name="current_password" autocomplete="current-password"><br><br>
 
-            <input type="email" id="email" name="email" value="{{ request.user.email }}" autocomplete="email"><br><br>
+    <label for="password">New Password:</label>
 
-            <label for="current_password">Current Password:</label>
-            
-            <input type="password" id="current_password" name="current_password" autocomplete="current-password"><br><br>
-            
-            <label for="password">Password:</label>
+    <input type="password" id="password" name="password" autocomplete="new-password"><br><br>
 
-            <input type="password" id="password" name="password" autocomplete="new-password"><br><br>
+    <label for="verify_password">Confirm New Password:</label>
 
-            <label for="verify_password">Verify Password:</label>
+    <input type="password" id="verify_password" name="verify_password" autocomplete="new-password">
 
-            <input type="password" id="verify_password" name="verify_password" autocomplete="new-password">
+    <input type="submit" value="Update Account">
 
-            <input type="submit" value="Update Account">
+</form>
 
-        </form>
-
-        {% endblock %}
-        
-    </body>
-</html>
+{% endblock %}
