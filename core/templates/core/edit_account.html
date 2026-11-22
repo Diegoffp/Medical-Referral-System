@@ -1,60 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Edit Your Account</title>
-        <style>
-            .AccountDelete{
-                color: rgb(134, 4, 4);
-            }
-        </style>
-    </head>
-    <body>
+{% extends 'base.html' %}
 
-        {% extends 'base.html' %}
+{% block title %}
+    Edit Your Account
+{% endblock %}
 
-        {% block title %}
-            Edit Your Account
-        {% endblock %}
+{% block content %}
 
-        {% block content %}
-        
-        <h1>Edit Your Account</h1>
+<h1>Edit Your Account</h1>
 
-        <form action="{% url 'edit_account' %}" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
+<form action="{% url 'edit_account' %}" method="POST">
+    {% if error %}
+        <p style="color:red;">{{ error }}</p>
+    {% endif %}
 
-            <label for="username">Username:</label>
+    {% csrf_token %}
 
-            <input type="text" id="username" name="username" autocomplete="username"><br><br>
+    <p>
+        Current Username: {{ request.user.username }}<br>
+        Current Email: {{ request.user.email }}
+    </p>
+    
+    <label for="username">New Username:</label>
 
-            <label for="email">Email:</label>
+    <input type="text" id="username" name="username" autocomplete="username"><br><br>
+    
+    <label for="email">New Email:</label>
 
-            <input type="email" id="email" name="email" autocomplete="email"><br><br>
+    <input type="email" id="email" name="email" autocomplete="email"><br><br>
 
-            <label for="password">Password:</label>
+    <label for="current_password">Current Password:</label>
 
-            <input type="password" id="password" name="password" autocomplete="new-password"><br><br>
+    <input type="password" id="current_password" name="current_password" autocomplete="current-password"><br><br>
 
-            <label for="verify_password">Verify Password:</label>
+    <label for="password">New Password:</label>
 
-            <input type="password" id="verify_password" name="verify_password" autocomplete="new-password">
+    <input type="password" id="password" name="password" autocomplete="new-password"><br><br>
 
-            <input type="submit" value="Update Account">
+    <label for="verify_password">Confirm New Password:</label>
 
-            <br><br><br><br>
-            <p class="AccountDelete">Delete account below, deletion of account is permenant.</p>
-            <label for="confirmation">Type DELETE to confirm.</label>
-            <input type="text" id="confirmation" name="confirmation" autocomplete="off" required>
-            <button type="submit">Delete My Account</button>
-            {% if error %}
-                <p style="color: red;">{{ error }}</p>
-            {% endif %}
-            <a href="{% url 'home' %}">Cancel changes</a>
-        </form>
+    <input type="password" id="verify_password" name="verify_password" autocomplete="new-password">
 
-        {% endblock %}
-        
-    </body>
-</html>
+    <input type="submit" value="Update Account">
+
+    <br><br><br><br>
+    <p class="AccountDelete">Delete account below, deletion of account is permenant.</p>
+    
+    <label for="confirmation">Type DELETE to confirm.</label>
+    
+    <input type="text" id="confirmation" name="confirmation" autocomplete="off">
+    
+    <button type="submit" name="delete_account" value="true">Delete My Account</button>
+    
+    <a href="{% url 'home' %}">Cancel changes</a>
+</form>
+
+{% endblock %}
