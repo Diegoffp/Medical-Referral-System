@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from .models import Patient, Referral, Insurance, Provider, Location
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth import authenticate, logout
 
 
 @login_required
@@ -171,6 +173,10 @@ def login_page(request):
 
     return render(request, "core/Login.html", {"error": error})
 
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+
 @login_required
 def edit_account(request):
     error = None
@@ -178,23 +184,33 @@ def edit_account(request):
     if request.method == "POST":
         user = request.user
 
-        username = request.POST.get("username")
-        email = request.POST.get("email")
+        username = request.POST.get("username").strip()
+        email = request.POST.get("email").strip()
+        current_password = request.POST.get("current_password")
         password = request.POST.get("password")
         verify_password = request.POST.get("verify_password")
 
         if username:
-            user.username = username
+            if User.objects.filter(username=username).exclude(id=user.id).exists():
+                error = "Username already exists."
+                return render(request, "core/edit_account.html", {"error": error})
+
+        user.username = username
 
         if email:
             user.email = email
+
+        if not user.check_password(current_password):
+            return render(request, "core/edit_account.html", {"error": "Current password is incorrect."})
+            
         if password:
             if password != verify_password:
-                error = "Passwords do not match."
-                return render(request, "core/edit_account.html", {"error": error})
+                return render(request, "core/edit_account.html", {"error": "Passwords do not match."})
             user.set_password(password)
 
         user.save()
+
+        update_session_auth_hash(request, user)
 
         return redirect("home")
     return render(request, "core/edit_account.html", {"error": error})
