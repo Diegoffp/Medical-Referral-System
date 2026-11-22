@@ -189,12 +189,31 @@
             </h2>
 
             <p><strong>Specialty:</strong> {{ specialist.specialty }}</p>
-            <p><strong>Location:</strong> {{ specialist.location.name }}</p>
-            <p><strong>Years of Practice:</strong> {{ specialist.years_of_practice|default_if_none:"Not specified" }}</p>
-            <p><strong>Languages:</strong> {{ specialist.spoken_languages }}</p>
-            <p><strong>Certifications:</strong> {{ specialist.certifications }}</p>
+             <p>
+            <strong>Location:</strong>
+            {{ specialist.location.name|default:"Not specified" }}
+        </p>
 
-            <p><strong>Accepted Insurance:</strong>
+        <details>
+            <summary>View additional information</summary>
+
+            <p>
+                <strong>Years of Practice:</strong>
+                {{ specialist.years_of_practice|default_if_none:"Not specified" }}
+            </p>
+
+            <p>
+                <strong>Languages:</strong>
+                {{ specialist.spoken_languages|default:"Not specified" }}
+            </p>
+
+            <p>
+                <strong>Certifications:</strong>
+                {{ specialist.certifications|default:"Not specified" }}
+            </p>
+
+            <p>
+                <strong>Accepted Insurance:</strong>
                 {% for insurance in specialist.accepted_insurance.all %}
                     {{ insurance.name }}{% if not forloop.last %}, {% endif %}
                 {% empty %}
@@ -202,8 +221,12 @@
                 {% endfor %}
             </p>
 
-            <p>{{ specialist.biography }}</p>
-        </div>
+            <p>
+                <strong>About:</strong>
+                {{ specialist.biography|default:"No additional information available." }}
+            </p>
+        </details>
+    </div>
     {% empty %}
         <p>No matching specialists found.</p>
     {% endfor %}
