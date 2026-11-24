@@ -42,6 +42,16 @@
 
     <input type="submit" value="Update Account">
 
+    <br><br><br><br>
+    <p class="AccountDelete">Delete account below, deletion of account is permenant.</p>
+    
+    <label for="confirmation">Type DELETE to confirm.</label>
+    
+    <input type="text" id="confirmation" name="confirmation" autocomplete="off">
+    
+    <button type="submit" name="delete_account" value="true">Delete My Account</button>
+    
+    <a href="{% url 'home' %}">Cancel changes</a>
 </form>
 
 {% endblock %}

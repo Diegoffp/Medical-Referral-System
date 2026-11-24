@@ -179,7 +179,13 @@ def logout_view(request):
 
 @login_required
 def edit_account(request):
+    admin_error = None
     error = None
+    delete_success = None
+    
+    if request.user.is_staff:
+        admin_error = "Admins utlize the admin portal to modify admin accounts."
+        return render(request, "core/portal.html", {"admin_error": admin_error})
     
     if request.method == "POST":
         user = request.user
@@ -189,9 +195,21 @@ def edit_account(request):
         current_password = request.POST.get("current_password","")
         password = request.POST.get("password","")
         verify_password = request.POST.get("verify_password","")
+        confirmation = request.POST.get("confirmation", "").strip()
 
         if not user.check_password(current_password):
             return render(request, "core/edit_account.html", {"error": "Current password is incorrect."})
+        
+        # Account deletion block.
+        if "delete_account" in request.POST:
+            if confirmation == "DELETE":
+                user.delete()
+                logout(request)
+                delete_success = "Your account has been deleted."
+                return render(request, "core/Login.html", {"delete_success": delete_success})
+            else:
+                error = 'You must type "DELETE" to confirm.'
+                return render(request, "core/edit_account.html", {"error": error})
 
         if username:
             if User.objects.filter(username=username).exclude(id=user.id).exists():
@@ -209,8 +227,7 @@ def edit_account(request):
             user.set_password(password)
 
         user.save()
-
         update_session_auth_hash(request, user)
-
         return redirect("home")
+    
     return render(request, "core/edit_account.html", {"error": error})
