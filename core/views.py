@@ -48,7 +48,7 @@ def my_referrals(request):
     except Patient.DoesNotExist:
         return render(request, "core/my_referrals.html", {
             "error": "Your account is not linked to a patient profile.",
-            "referrals": Referral.object.none(),
+            "referrals": Referral.objects.none(),
         })
 
     referrals = Referral.objects.filter(
