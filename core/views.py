@@ -40,6 +40,24 @@ def portal(request):
         "error": error,
         "referrals": referrals,
     })
+    
+@login_required
+def my_referrals(request):
+    try:
+        patient = request.user.patient
+    except Patient.DoesNotExist:
+        return render(request, "core/my_referrals.html", {
+            "error": "Your account is not linked to a patient profile.",
+            "referrals": Referral.object.none(),
+        })
+
+    referrals = Referral.objects.filter(
+        patient=patient
+    ).order_by("-referral_date")
+
+    return render(request, "core/my_referrals.html", {
+        "referrals": referrals,
+    })
 
 @login_required
 def listings(request):
