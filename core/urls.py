@@ -7,6 +7,7 @@ urlpatterns = [
     path("home/", views.home, name="home_page"),
     path("portal/", views.portal, name="portal"),
     path("listings/", views.listings, name="listings"),
+    path("my-referrals/", views.my_referrals, name="my_referrals"),
     path("appointments/", views.appointments, name="appointments"),
     path("create_account/", views.create_account, name="create_account"),
     path("referral/<int:referral_id>/", views.view_referral, name="view_referral"),
