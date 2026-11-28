@@ -24,6 +24,7 @@
         .logout-btn {background: none; border: 1px solid #1a4fd1; color: #1a4fd1; border-radius: 6px; padding: 4px 10px; font-size: 13px; cursor: pointer; }
         .logout-btn:hover {background: #1a4fd1; color: #fff; }
         main { padding: 2rem; }
+        .AccountDelete { color: rgb(134, 4, 4); }
     </style>
 </head>
 <body>
@@ -37,10 +38,12 @@
         <div class="site-links">
             <a href="{% url 'home' %}" {% if page == 'home' or page == 'portal' or page == 'view_referral' %}class="active"{% endif %}>Home</a>
             <a href="{% url 'listings' %}" {% if page == 'listings' %}class="active"{% endif %}>Specialists</a>
-            <a href="{% url 'appointments' %}" {% if page == 'appointments' %}class="active"{% endif %}>My Referrals</a>
+            <a href="{% url 'my_referrals' %}" {% if page == 'my_referrals' %}class="active"{% endif %}>My Referrals</a>
             {% if not user.is_authenticated %}
             <a href="{% url 'create_account' %}" {% if page == 'create_account' %}class="active"{% endif %}>Create Account</a>
             <a href="{% url 'login' %}" {% if page == 'login' %}class="active"{% endif %}>Login</a>
+            {% else %}
+            <a href="{% url 'edit_account' %}" {% if page == 'edit_account' %}class="active"{% endif %}>Edit Account</a>
             {% endif %}
         </div>
         <div class="site-user">

@@ -4,7 +4,11 @@
 
 {% block content %}
 
-    <div class="main">
+{% if delete_success %}
+    <p style="color: red;">{{ delete_success }}</p>
+{% endif %}
+    
+<div class="main">
     <h1>Login page</h1>
         <h3>Enter your login credentials</h3>
 

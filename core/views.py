@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import transaction
 from django.contrib.auth.models import User
-from .models import Patient, Referral, Insurance, Provider, Location
+from .models import Patient, Referral, Insurance, Provider, Location, AppointmentInfo, Cost
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth import authenticate, logout
 
 
 @login_required
@@ -13,40 +15,51 @@ def home(request):
 @login_required
 def portal(request):
     error = None
-    
+
+    try:
+        patient = request.user.patient
+    except Patient.DoesNotExist:
+        error = "Your account is not linked to a patient profile."
+        return render(request, "core/portal.html", {
+            "error": error,
+            "referrals": Referral.objects.none(),
+        })
+
+    referrals = Referral.objects.filter(
+        patient=patient
+    ).order_by("-referral_date")
+
     if request.method == "POST":
-        raw = request.POST.get("referral_number", "").strip().upper()
-        digits = raw.replace("REF-", "")
-        
-        if digits.isdigit():
-            try:
-                referral = Referral.objects.get(referral_number=int(digits))
-                same_first_name = request.user.first_name.strip().lower() == referral.first_name.strip().lower() # compares user/referral first name
-                same_last_name = request.user.last_name.strip().lower() == referral.last_name.strip().lower() # compares user/referral last name
-                
-                try:
-                    patient = request.user.patient # grabs user patient attribute
-                except Patient.DoesNotExist: # Admins need user login to test patient portal -> patient object does not exist for them
-                    if request.user.is_staff:
-                        error = "You're logged in as an admin. Log out and sign in as a patient to use the patient portal."
-                        return render(request, "core/portal.html", {"error": error}) 
-                
-                if not(same_first_name and same_last_name): # throws error if user does not match referral records
-                        error = "This referral does not match your records."
-                        return render(request, "core/portal.html",{"error":error})
-                
-                if referral.patient is None: # assigns referral to patient
-                    referral.patient = patient
-                    referral.save()
-                
-                return redirect("view_referral", referral_id=referral.id)
-                
-            except Referral.DoesNotExist:
-                pass
+        referral_id = request.POST.get("referral_id")
 
-        error = "No referral found with that ID."
-    return render(request, "core/portal.html",{"error":error})
+        try:
+            referral = referrals.get(id=referral_id)
+            return redirect("view_referral", referral_id=referral.id)
+        except (Referral.DoesNotExist, ValueError, TypeError):
+            error = "Please select a valid referral."
 
+    return render(request, "core/portal.html", {
+        "error": error,
+        "referrals": referrals,
+    })
+    
+@login_required
+def my_referrals(request):
+    try:
+        patient = request.user.patient
+    except Patient.DoesNotExist:
+        return render(request, "core/my_referrals.html", {
+            "error": "Your account is not linked to a patient profile.",
+            "referrals": Referral.objects.none(),
+        })
+
+    referrals = Referral.objects.filter(
+        patient=patient
+    ).order_by("-referral_date")
+
+    return render(request, "core/my_referrals.html", {
+        "referrals": referrals,
+    })
 
 @login_required
 def listings(request):
@@ -74,6 +87,53 @@ def listings(request):
         specialists = specialists.filter(spoken_languages__icontains=language)
 
     specialists = specialists.distinct().order_by("last_name", "first_name")
+
+    try:
+        patient = request.user.patient
+    except Patient.DoesNotExist:
+        patient = None
+
+    for specialist in specialists:
+        appointment = AppointmentInfo.objects.filter(provider=specialist).first()
+        specialist.display_wait_time = (
+            appointment.wait_time
+            if appointment
+            else "Not specified"
+        )
+
+        if patient and patient.insurance:
+            specialist.is_in_network = (
+                specialist.accepted_insurance.filter(
+                    id=patient.insurance.id
+                ).exists()
+            )
+            if specialist.is_in_network:
+                cost = Cost.objects.filter(
+                    insurance_id=patient.insurance_id
+                ).first()
+
+                specialist.display_cost = (
+                    cost.expected_cost
+                    if cost and cost.expected_cost
+                    else "Not specified"
+                )
+            else:
+                specialist.display_cost = max(
+                    Cost.COST_TYPES,
+                    key=lambda choice: int(
+                        choice[0].replace("$", "")
+                    )
+                )[0]
+                                                                                  
+        else:
+            specialist.is_in_network = False
+            specialist.display_cost = "Not specified"
+
+        specialist.network_status = (
+            "In-house"
+            if specialist.is_in_network
+            else "Out-of-house"
+        )
 
     return render(request, "core/listings.html", {
         "specialists": specialists,
@@ -178,4 +238,61 @@ def login_page(request):
 
     return render(request, "core/Login.html", {"error": error})
 
+def logout_view(request):
+    logout(request)
+    return redirect('login')
 
+@login_required
+def edit_account(request):
+    admin_error = None
+    error = None
+    delete_success = None
+    
+    if request.user.is_staff:
+        admin_error = "Admins utlize the admin portal to modify admin accounts."
+        return render(request, "core/portal.html", {"admin_error": admin_error})
+    
+    if request.method == "POST":
+        user = request.user
+
+        username = request.POST.get("username","").strip()
+        email = request.POST.get("email","").strip()
+        current_password = request.POST.get("current_password","")
+        password = request.POST.get("password","")
+        verify_password = request.POST.get("verify_password","")
+        confirmation = request.POST.get("confirmation", "").strip()
+
+        if not user.check_password(current_password):
+            return render(request, "core/edit_account.html", {"error": "Current password is incorrect."})
+        
+        # Account deletion block.
+        if "delete_account" in request.POST:
+            if confirmation == "DELETE":
+                user.delete()
+                logout(request)
+                delete_success = "Your account has been deleted."
+                return render(request, "core/Login.html", {"delete_success": delete_success})
+            else:
+                error = 'You must type "DELETE" to confirm.'
+                return render(request, "core/edit_account.html", {"error": error})
+
+        if username:
+            if User.objects.filter(username=username).exclude(id=user.id).exists():
+                error = "Username already exists."
+                return render(request, "core/edit_account.html", {"error": error})
+
+            user.username = username
+
+        if email:
+            user.email = email
+            
+        if password:
+            if password != verify_password:
+                return render(request, "core/edit_account.html", {"error": "Passwords do not match."})
+            user.set_password(password)
+
+        user.save()
+        update_session_auth_hash(request, user)
+        return redirect("home")
+    
+    return render(request, "core/edit_account.html", {"error": error})
