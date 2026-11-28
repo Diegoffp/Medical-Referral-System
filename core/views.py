@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth import authenticate, logout
-
+from django.core.exceptions import PermissionDenied
 
 @login_required
 def home(request): 
@@ -220,6 +220,14 @@ def create_account(request):
 @login_required
 def view_referral(request, referral_id):
     referral = get_object_or_404(Referral, id=referral_id)
+
+    owns_referral = (
+        hasattr(request.user, "patient")
+        and referral.patient == request.user.patient
+    )
+    if not (owns_referral or request.user.is_staff):
+        raise PermissionDenied
+
     return render(request, "core/view_referral.html", {"referral": referral})
 
 def login_page(request):
