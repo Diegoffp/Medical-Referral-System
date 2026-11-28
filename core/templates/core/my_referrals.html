@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}My Referrals - MedConnect{% endblock %}
+
+{% block content %}
+<style>
+  .referrals-page {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 24px;
+  }
+
+  .referrals-page h1 {
+      color: #172033;
+      margin-bottom: 6px;
+  }
+
+  .referrals-subtitle {
+      color: #667085;
+      margin-top: 0;
+      margin-bottom: 24px;
+  }
+
+  .referral-card {
+      background: white;
+      border: 1px solid #e1e6ef;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  }
+
+  .referral-number {
+      color: #667085;
+      font-size: 14px;
+      margin: 0 0 6px;
+  }
+
+  .referral-card h2 {
+      color: #172033;
+      font-size: 20px;
+      margin: 0 0 24px;
+  }
+
+  .referral-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+  }
+
+  .referral-info div {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+  }
+
+  .referral-label {
+      color: #172033;
+      font-weight: bold;
+      font-size: 14px;
+  }
+
+  .referral-value {
+      color: #344054;
+      font-size: 14px;
+  }
+
+  .referral-status {
+      display: inline-block;
+      width: fit-content;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: #e0f2fe;
+      color: #0369a1;
+      font-size: 13px;
+  }
+
+  .no-referrals {
+      background: white;
+      border: 1px solid #e1e6ef;
+      border-radius: 10px;
+      padding: 24px;
+  }
+
+  @media (max-width: 600px) {
+      .referral-info {
+          grid-template-columns: 1fr;
+      }
+  }
+</style>
+
+<div class="referrals-page">
+    <p class="referrals-subtitle">Patient portal / My Referrals</p>
+
+    <h1>My Referrals</h1>
+    <p class="referrals-subtitle">
+        View and track all of your referrals.
+    </p>
+
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+
+    {% for referral in referrals %}
+        <div class="referral-card">
+          <p class="referral-number">
+              {{ referral.referral_number }} ·
+              {{ referral.get_requested_specialty_display }}
+          </p>
+
+          <h2>
+              Referral to {{ referral.get_requested_specialty_display }}
+          </h2>
+
+          <div class="referral-info">
+              <div>
+                  <span class="referral-label">Date issued</span>
+                  <span class="referral-value">
+                      {{ referral.referral_date|date:"M d, Y" }}
+                  </span>
+              </div>
+
+              <div>
+                  <span class="referral-label">Specialty</span>
+                  <span class="referral-value">
+                      {{ referral.get_requested_specialty_display }}
+                  </span>
+              </div>
+
+              <div>
+                  <span class="referral-label">Status</span>
+                  <span class="referral-status">
+                      {{ referral.get_status_display }}
+                  </span>
+              </div>
+          </div>
+       </div>
+  {% empty %}
+      <div class="no-referrals">
+          <p>You do not have any referrals yet.</p>
+      </div>
+  {% endfor %}
+</div>
+{% endblock %}

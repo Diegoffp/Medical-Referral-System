@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import transaction
 from django.contrib.auth.models import User
-from .models import Patient, Referral, Insurance, Provider, Location
+from .models import Patient, Referral, Insurance, Provider, Location, AppointmentInfo, Cost
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
@@ -42,6 +42,24 @@ def portal(request):
         "error": error,
         "referrals": referrals,
     })
+    
+@login_required
+def my_referrals(request):
+    try:
+        patient = request.user.patient
+    except Patient.DoesNotExist:
+        return render(request, "core/my_referrals.html", {
+            "error": "Your account is not linked to a patient profile.",
+            "referrals": Referral.objects.none(),
+        })
+
+    referrals = Referral.objects.filter(
+        patient=patient
+    ).order_by("-referral_date")
+
+    return render(request, "core/my_referrals.html", {
+        "referrals": referrals,
+    })
 
 @login_required
 def listings(request):
@@ -69,6 +87,53 @@ def listings(request):
         specialists = specialists.filter(spoken_languages__icontains=language)
 
     specialists = specialists.distinct().order_by("last_name", "first_name")
+
+    try:
+        patient = request.user.patient
+    except Patient.DoesNotExist:
+        patient = None
+
+    for specialist in specialists:
+        appointment = AppointmentInfo.objects.filter(provider=specialist).first()
+        specialist.display_wait_time = (
+            appointment.wait_time
+            if appointment
+            else "Not specified"
+        )
+
+        if patient and patient.insurance:
+            specialist.is_in_network = (
+                specialist.accepted_insurance.filter(
+                    id=patient.insurance.id
+                ).exists()
+            )
+            if specialist.is_in_network:
+                cost = Cost.objects.filter(
+                    insurance_id=patient.insurance_id
+                ).first()
+
+                specialist.display_cost = (
+                    cost.expected_cost
+                    if cost and cost.expected_cost
+                    else "Not specified"
+                )
+            else:
+                specialist.display_cost = max(
+                    Cost.COST_TYPES,
+                    key=lambda choice: int(
+                        choice[0].replace("$", "")
+                    )
+                )[0]
+                                                                                  
+        else:
+            specialist.is_in_network = False
+            specialist.display_cost = "Not specified"
+
+        specialist.network_status = (
+            "In-house"
+            if specialist.is_in_network
+            else "Out-of-house"
+        )
 
     return render(request, "core/listings.html", {
         "specialists": specialists,
