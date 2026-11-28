@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/6.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -120,12 +120,28 @@ LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = 'login'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
-# Email
-# https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-MAILERS = {
-    'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
-    },
-}
+# Email
+# https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
+# Real SMTP when EMAIL_HOST_USER and EMAIL_HOST_PASSWORD environment variables
+# are set; otherwise emails are printed to the terminal (development default).
+if os.environ.get("EMAIL_HOST_USER") and os.environ.get("EMAIL_HOST_PASSWORD"):
+    MAILERS = {
+        "default": {
+            "BACKEND": "django.core.mail.backends.smtp.EmailBackend",
+            "OPTIONS": {
+                "host": "smtp.gmail.com",
+                "use_tls": True,
+                "username": os.environ["EMAIL_HOST_USER"],
+                "password": os.environ["EMAIL_HOST_PASSWORD"],
+            },
+        },
+    }
+    DEFAULT_FROM_EMAIL = os.environ["EMAIL_HOST_USER"]
+else:
+    MAILERS = {
+        "default": {
+            "BACKEND": "django.core.mail.backends.console.EmailBackend",
+        },
+    }
